@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://xfynrg3vnx5u"]
 
-[ext_resource type="Script" path="res://RenameToYourMinigame/minigame.gd" id="1_26mrl"]
+[ext_resource type="Script" uid="uid://dw32qsde83xvi" path="res://RenameToYourMinigame/minigame.gd" id="1_26mrl"]
 
 [node name="Minigame" type="CanvasLayer" unique_id=855698764]
 layer = 20

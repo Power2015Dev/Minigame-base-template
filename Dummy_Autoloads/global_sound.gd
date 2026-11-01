@@ -152,12 +152,12 @@ func SFX_recursion_list(file_path : String, sfxlist : Dictionary):
 			var clean_name = real_name.get_basename()
 			
 			if not sfxlist.has(clean_name):
-				var route = file_path + "/" + real_name
+				var route = file_path.path_join(real_name)
 				sfxlist[clean_name] = load(route)
 				
 		var subfile = sfx_directory.get_directories()
 		for file in subfile:
-			var new_file_path = file_path + "/" + file
+			var new_file_path = file_path.path_join(file)
 			SFX_recursion_list(new_file_path, sfxlist)
 	else:
 		print("folder Minigame_SFX was not found", file_path)
@@ -179,12 +179,12 @@ func Music_recursion_list(file_path : String, musiclist : Dictionary):
 			var clean_name = real_name.get_basename()
 			
 			if not musiclist.has(clean_name):
-				var route = file_path + "/" + real_name
+				var route = file_path.path_join(real_name)
 				musiclist[clean_name] = load(route)
 				
 		var subfile = music_directory.get_directories()
 		for file in subfile:
-			var new_file_path = file_path + "/" + file
+			var new_file_path = file_path.path_join(file)
 			Music_recursion_list(new_file_path, musiclist)
 	else:
 		print("folder Minigame_Music was not found", file_path)
@@ -204,12 +204,50 @@ func voice_recursion_list(file_path : String, voicelist : Dictionary):
 			var clean_name = real_name.get_basename() # Ej: "chiaki_ALTERED-1"
 			
 			if not voicelist.has(clean_name):
-				var route = file_path + "/" + real_name
+				var route = file_path.path_join(real_name)
 				voicelist[clean_name] = load(route)
 				
 		var subfiles = voice_directory.get_directories()
 		for file in subfiles:
-			var new_file_path = file_path + "/" + file
+			var new_file_path = file_path.path_join(file)
 			voice_recursion_list(new_file_path, voicelist)
 	else:
 		print("folder Minigame_Voices was not found ", file_path)
+
+
+#region Audio getters
+# Names are the file name without extension.
+# Inside Danganmake they include the sounds of the game, the trial and your mod.
+
+func get_sfx_names() -> PackedStringArray:
+	return PackedStringArray(sfx.keys())
+
+func get_music_names() -> PackedStringArray:
+	return PackedStringArray(music.keys())
+
+func get_voice_names() -> PackedStringArray:
+	return PackedStringArray(voice.keys())
+
+## Returns the AudioStream so you can play it in your own AudioStreamPlayer/3D.
+## Use the "SFX", "Music" or "Voice" bus so the player volume options apply.
+func get_sfx_stream(sound_name: String) -> AudioStream:
+	return sfx.get(sound_name.strip_edges()) as AudioStream
+
+func get_music_stream(music_name: String) -> AudioStream:
+	return music.get(music_name.strip_edges()) as AudioStream
+
+func get_voice_stream(voice_name: String) -> AudioStream:
+	return voice.get(voice_name.strip_edges()) as AudioStream
+
+func get_current_music() -> String:
+	return current_music_played
+
+## Position of the music in seconds, useful to sync animations with the beat.
+func get_music_position() -> float:
+	if music_player.playing:
+		## WARNING:
+		## this ain't taking output latency into account
+		## look for a tutorial on that.
+		return music_player.get_playback_position()
+	return 0.0
+#endregion

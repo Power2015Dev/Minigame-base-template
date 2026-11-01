@@ -1,0 +1,165 @@
+[gd_scene format=3 uid="uid://gxw1qq8ge1y4"]
+
+[ext_resource type="Script" uid="uid://ds6qa8di3276k" path="res://Dummy_Autoloads/TestBench/test_bench.gd" id="1_bench"]
+[ext_resource type="PackedScene" uid="uid://xfynrg3vnx5u" path="res://RenameToYourMinigame/Minigame.tscn" id="2_mini"]
+[ext_resource type="PackedScene" uid="uid://cwqqycpb88iln" path="res://RenameToYourMinigame/Editor_Interface.tscn" id="3_ui"]
+[ext_resource type="PackedScene" uid="uid://b7egccyoyi7ae" path="res://Dummy_Autoloads/TestBench/test_character.tscn" id="4_char"]
+[ext_resource type="Texture2D" uid="uid://dsdesfrafnck8" path="res://Dummy_Autoloads/TestBench/sunflowers_puresky_1k.exr" id="4_huhxc"]
+[ext_resource type="VoxelGIData" uid="uid://drjgargspnh03" path="res://Dummy_Autoloads/TestBench/test_bench.VoxelGI_data.res" id="6_6udrc"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_e8e2l"]
+panorama = ExtResource("4_huhxc")
+
+[sub_resource type="Sky" id="Sky_ehndn"]
+sky_material = SubResource("PanoramaSkyMaterial_e8e2l")
+
+[sub_resource type="Environment" id="Environment_test"]
+background_mode = 2
+background_color = Color(0.05, 0.05, 0.08, 1)
+sky = SubResource("Sky_ehndn")
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.6, 0.7, 1)
+ambient_light_energy = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_color = Color(0.8235294, 0.84313726, 0.827451, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_floor"]
+material = SubResource("StandardMaterial3D_floor")
+top_radius = 8.0
+bottom_radius = 8.0
+height = 0.2
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_floor"]
+height = 0.2
+radius = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_balloon"]
+bg_color = Color(0.08, 0.08, 0.1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="TestBench" type="Node3D" unique_id=1767170371 node_paths=PackedStringArray("label_tree")]
+script = ExtResource("1_bench")
+minigame_scene = ExtResource("2_mini")
+editor_interface_scene = ExtResource("3_ui")
+label_tree = NodePath("CanvasLayer/Label")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=311718601]
+environment = SubResource("Environment_test")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=433704666]
+transform = Transform3D(0.8660249, -0.40957606, 0.28678828, 0, 0.5735759, 0.8191522, -0.5, -0.7094061, 0.49673155, 0, 6, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=818123393]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 1.5, 0)
+current = true
+fov = 50.0
+
+[node name="Courtroom" type="Node3D" parent="." unique_id=1411949266]
+
+[node name="Floor" type="MeshInstance3D" parent="Courtroom" unique_id=804091634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("CylinderMesh_floor")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Courtroom/Floor" unique_id=1136224772]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Courtroom/Floor/StaticBody3D" unique_id=754353048]
+shape = SubResource("CylinderShape3D_floor")
+
+[node name="Characters" type="Node3D" parent="." unique_id=2012623262]
+
+[node name="Character_01" parent="Characters" unique_id=681408261 instance=ExtResource("4_char")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 0, 0)
+
+[node name="Character_02" parent="Characters" unique_id=1151748047 instance=ExtResource("4_char")]
+transform = Transform3D(0.382683, 0, 0.92388, 0, 1, 0, -0.92388, 0, 0.382683, 5.543277, 0, 2.296101)
+
+[node name="Character_03" parent="Characters" unique_id=1247451516 instance=ExtResource("4_char")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 4.242641, 0, 4.242641)
+
+[node name="Character_04" parent="Characters" unique_id=1094181711 instance=ExtResource("4_char")]
+transform = Transform3D(0.92388, 0, 0.382683, 0, 1, 0, -0.382683, 0, 0.92388, 2.296101, 0, 5.543277)
+
+[node name="Character_05" parent="Characters" unique_id=2147013289 instance=ExtResource("4_char")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
+
+[node name="Character_06" parent="Characters" unique_id=1638057593 instance=ExtResource("4_char")]
+transform = Transform3D(0.92388, 0, -0.382683, 0, 1, 0, 0.382683, 0, 0.92388, -2.296101, 0, 5.543277)
+
+[node name="Character_07" parent="Characters" unique_id=2026325020 instance=ExtResource("4_char")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -4.242641, 0, 4.242641)
+
+[node name="Character_08" parent="Characters" unique_id=121591570 instance=ExtResource("4_char")]
+transform = Transform3D(0.382683, 0, -0.92388, 0, 1, 0, 0.92388, 0, 0.382683, -5.543277, 0, 2.296101)
+
+[node name="Character_09" parent="Characters" unique_id=1751280334 instance=ExtResource("4_char")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -6, 0, 0)
+
+[node name="Character_10" parent="Characters" unique_id=977931495 instance=ExtResource("4_char")]
+transform = Transform3D(-0.382683, 0, -0.92388, 0, 1, 0, 0.92388, 0, -0.382683, -5.543277, 0, -2.296101)
+
+[node name="Character_11" parent="Characters" unique_id=901350238 instance=ExtResource("4_char")]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -4.242641, 0, -4.242641)
+
+[node name="Character_12" parent="Characters" unique_id=1292660982 instance=ExtResource("4_char")]
+transform = Transform3D(-0.92388, 0, -0.382683, 0, 1, 0, 0.382683, 0, -0.92388, -2.296101, 0, -5.543277)
+
+[node name="Character_13" parent="Characters" unique_id=960520008 instance=ExtResource("4_char")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -6)
+
+[node name="Character_14" parent="Characters" unique_id=563695273 instance=ExtResource("4_char")]
+transform = Transform3D(-0.92388, 0, 0.382683, 0, 1, 0, -0.382683, 0, -0.92388, 2.296101, 0, -5.543277)
+
+[node name="Character_15" parent="Characters" unique_id=206055711 instance=ExtResource("4_char")]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, 4.242641, 0, -4.242641)
+
+[node name="Character_16" parent="Characters" unique_id=395192992 instance=ExtResource("4_char")]
+transform = Transform3D(-0.382683, 0, 0.92388, 0, 1, 0, -0.92388, 0, -0.382683, 5.543277, 0, -2.296101)
+
+[node name="TestBalloon" type="CanvasLayer" parent="." unique_id=608188259]
+layer = 10
+
+[node name="Panel" type="Panel" parent="TestBalloon" unique_id=903140127]
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.75
+anchor_right = 0.9
+anchor_bottom = 0.95
+theme_override_styles/panel = SubResource("StyleBoxFlat_balloon")
+
+[node name="Label" type="Label" parent="TestBalloon/Panel" unique_id=676312316]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 16.0
+offset_right = -24.0
+offset_bottom = -16.0
+theme_override_font_sizes/font_size = 28
+text = "Character_01: This is a test balloon. Danganmake pauses it while your custom game runs."
+autowrap_mode = 3
+
+[node name="UILayer" type="CanvasLayer" parent="." unique_id=1200065742]
+layer = 30
+
+[node name="VoxelGI" type="VoxelGI" parent="." unique_id=555450006]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.642578, 0)
+size = Vector3(20, 10.714844, 20)
+data = ExtResource("6_6udrc")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=225064914]
+
+[node name="Label" type="Label" parent="CanvasLayer" unique_id=1830560054]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -486.0
+offset_bottom = 88.0
+grow_horizontal = 0
+tooltip_text = "This will tell you whether the minigame is currently active in Danganmake."
+theme_override_font_sizes/font_size = 64
+text = "Alive in the tree"

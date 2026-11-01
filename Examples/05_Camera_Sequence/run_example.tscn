@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://c3pafkbdqhfyw"]
+
+[ext_resource type="PackedScene" uid="uid://gxw1qq8ge1y4" path="res://Dummy_Autoloads/TestBench/test_bench.tscn" id="1_bench"]
+[ext_resource type="PackedScene" path="res://Examples/05_Camera_Sequence/camera_sequence.tscn" id="2_example"]
+
+[node name="TestBench" unique_id=1737714143 instance=ExtResource("1_bench")]
+minigame_scene = ExtResource("2_example")
+
+[node name="Label" parent="CanvasLayer" parent_id_path=PackedInt32Array(225064914) index="0" unique_id=1830560054]
+offset_left = 1429.0
+offset_top = 12.0
+offset_right = 1915.0
+offset_bottom = 100.0

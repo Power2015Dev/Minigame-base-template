@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://4i08gxjykuh8"]
+
+[ext_resource type="PackedScene" uid="uid://gxw1qq8ge1y4" path="res://Dummy_Autoloads/TestBench/test_bench.tscn" id="1_bench"]
+[ext_resource type="PackedScene" path="res://Examples/06_Persistent_Hud/persistent_hud.tscn" id="2_example"]
+
+[node name="TestBench" unique_id=853504165 instance=ExtResource("1_bench")]
+minigame_scene = ExtResource("2_example")

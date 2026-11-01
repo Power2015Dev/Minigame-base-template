@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Examples/02_Falling_Boxes/falling_boxes.gd" id="1_script"]
+
+[node name="FallingBoxes" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_script")
+
+[node name="Info" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1200.0
+offset_bottom = 100.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
+text = "Info"

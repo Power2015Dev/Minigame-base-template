@@ -11,23 +11,19 @@ config_version=5
 [application]
 
 config/name="Minigame base template"
-run/main_scene="uid://rkrtdl2j5hpm"
+run/main_scene="res://Dummy_Autoloads/TestBench/test_bench.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 boot_splash/bg_color=Color(0, 0, 0, 1)
-boot_splash/image="uid://xmtfl3fewxn3"
-config/icon="uid://xmtfl3fewxn3"
+boot_splash/image="res://iconDanganmake.png"
+config/icon="res://iconDanganmake.png"
 config/windows_native_icon="res://Danganmakeicon.ico"
-
-[audio]
-
-buses/default_bus_layout="uid://dsns2ia6mch1f"
 
 [autoload]
 
-GlobalSound="*uid://d3x2s16rxh6u2"
-GlobalStates="*uid://bd1arpx3ltxsj"
-CharacterList="*uid://51elas1bgkhd"
-CharacterScript="*uid://c5huvluu0iitq"
+GlobalSound="*res://Dummy_Autoloads/global_music.tscn"
+GlobalStates="*res://Dummy_Autoloads/global_states.gd"
+CharacterList="*res://Dummy_Autoloads/character_list.gd"
+CharacterScript="*res://Dummy_Autoloads/Character_Script.gd"
 
 [display]
 

@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://b7egccyoyi7ae"]
+
+[ext_resource type="Script" uid="uid://dhytonsu0i28x" path="res://Dummy_Autoloads/TestBench/test_character.gd" id="1_char"]
+[ext_resource type="Texture2D" uid="uid://bsr6h0gb5mwsl" path="res://Dummy_Autoloads/TestBench/reference.png" id="2_u8gmw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_podium"]
+albedo_color = Color(0.45, 0.3, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_podium"]
+material = SubResource("StandardMaterial3D_podium")
+size = Vector3(1, 1, 0.4)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
+radius = 0.4
+height = 1.8
+
+[node name="TestCharacter" type="Node3D" unique_id=827776178]
+script = ExtResource("1_char")
+
+[node name="Podium" type="MeshInstance3D" parent="." unique_id=2101383437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.6)
+mesh = SubResource("BoxMesh_podium")
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=1647638164]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.9, 0)
+pixel_size = 0.00703125
+texture = ExtResource("2_u8gmw")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sprite3D" unique_id=1579228365]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sprite3D/StaticBody3D" unique_id=2010028323]
+shape = SubResource("CapsuleShape3D_body")
+
+[node name="Label3D" type="Label3D" parent="." unique_id=1317049038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
+pixel_size = 0.004
+billboard = 1
+text = "TestCharacter"

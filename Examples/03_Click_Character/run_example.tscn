@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Dummy_Autoloads/TestBench/test_bench.tscn" id="1_bench"]
+[ext_resource type="PackedScene" path="res://Examples/03_Click_Character/click_character.tscn" id="2_example"]
+
+[node name="TestBench" instance=ExtResource("1_bench")]
+minigame_scene = ExtResource("2_example")
+skip_editor_interface = true

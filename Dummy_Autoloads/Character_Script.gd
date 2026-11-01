@@ -282,3 +282,44 @@ func Get_CH_Config(ch_name: String) -> Dictionary:
 func Change_Scene(new_scene: String):
 	free_roam_scene_changing.emit(new_scene)
 	await free_roam_scene_changed
+
+
+#region Free roam / 2D getters
+# Inside the template these return null or empty values.
+
+## The CharacterBody3D the player controls in the free roam scene, null in point-and-click.
+func get_player_body() -> CharacterBody3D:
+	return null
+
+## The camera active in the free roam scene (player camera or hostage camera).
+func get_active_camera_3d() -> Camera3D:
+	return null
+
+## Hostage cameras of the current map: { "alias": Transform3D }
+## Use them to place your own camera or with Move_to_hostage_camera(alias)
+func get_hostage_cameras() -> Dictionary:
+	return {}
+
+## Name of the free roam scene the player is in, "" outside free roam.
+func get_current_scene_name() -> String:
+	return ""
+
+## Flags already set in the free roam (see Set_Flag and Free_Roam_Until)
+func get_flags() -> PackedStringArray:
+	return PackedStringArray()
+
+func has_flag(flag: String) -> bool:
+	return get_flags().has(flag.strip_edges())
+
+## Name of the character and emotion shown in the 2D scene: { "character": "", "emotion": "" }
+func get_current_character_2d() -> Dictionary:
+	return {"character": "", "emotion": ""}
+
+## The TextureRect of the 2D background, so you can tween it or change its material.
+func get_background_node() -> TextureRect:
+	return null
+
+## The Sprite2D of the 2D character.
+func get_character_node_2d() -> Sprite2D:
+	return null
+#endregion
