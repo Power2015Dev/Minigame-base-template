@@ -1,4 +1,6 @@
 
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me%20here-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/power2015)
+
 # Minigame base template
 
 This is a template you can use to inject your own DanganMake minigames.
