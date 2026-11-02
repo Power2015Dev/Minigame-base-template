@@ -42,8 +42,7 @@ func Start_Minigame(param : Dictionary):
 	pass
 
 # Optional: to bring a persistent minigame back after loading a save,
-# copy this function to your script and uncomment it. Don't keep it here
-# without a reason: Danganmake creates every minigame that has it when a save loads.
+# The example testbenches inherit this script be aware of that.
 #
 # func Resume_Minigame(info: Dictionary) -> bool:
 # 	var state = GlobalStates.get_custom_value("my_state", null)
