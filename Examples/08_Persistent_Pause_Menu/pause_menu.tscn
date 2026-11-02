@@ -2,8 +2,6 @@
 
 [ext_resource type="Script" uid="uid://epjawm6a4a1q" path="res://Examples/08_Persistent_Pause_Menu/pause_menu.gd" id="1_script"]
 
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_lmmii"]
-
 [node name="PauseMenu" type="CanvasLayer" unique_id=232328119]
 process_mode = 3
 layer = 40
@@ -55,16 +53,17 @@ theme_override_font_sizes/font_size = 28
 text = "Truth Bullets: 0"
 
 [node name="LastLine" type="Label" parent="Menu/Box" unique_id=652883260]
+process_mode = 3
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
+text = "If a sound or song was playing, the pause menu pauses it; the pause menu itself may also have its own sounds."
 autowrap_mode = 3
 
 [node name="ReplayVoice" type="Button" parent="Menu/Box" unique_id=404690465]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-disabled = true
-text = "Replay voice"
+text = "Play test voice"
 
 [node name="MusicLabel" type="Label" parent="Menu/Box" unique_id=152105334]
 layout_mode = 2
@@ -91,10 +90,6 @@ text = "Load"
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Back to title"
-
-[node name="VoicePlayer" type="AudioStreamPlayer" parent="." unique_id=219027506]
-stream = SubResource("AudioStreamRandomizer_lmmii")
-bus = &"Voice"
 
 [connection signal="pressed" from="Menu/Box/ReplayVoice" to="." method="_on_replay_voice_pressed"]
 [connection signal="value_changed" from="Menu/Box/MusicVolume" to="." method="_on_music_volume_value_changed"]

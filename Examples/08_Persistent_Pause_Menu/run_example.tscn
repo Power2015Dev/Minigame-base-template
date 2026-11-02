@@ -1,7 +1,11 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cd5rhu012t648"]
 
-[ext_resource type="PackedScene" path="res://Dummy_Autoloads/TestBench/test_bench.tscn" id="1_bench"]
-[ext_resource type="PackedScene" path="res://Examples/08_Persistent_Pause_Menu/pause_menu.tscn" id="2_example"]
+[ext_resource type="PackedScene" uid="uid://gxw1qq8ge1y4" path="res://Dummy_Autoloads/TestBench/test_bench.tscn" id="1_bench"]
+[ext_resource type="PackedScene" uid="uid://y4d4wj6v7vsq" path="res://Examples/08_Persistent_Pause_Menu/pause_menu.tscn" id="2_example"]
+[ext_resource type="Script" uid="uid://besq83rcecoon" path="res://Examples/08_Persistent_Pause_Menu/music.gd" id="3_aplwl"]
 
-[node name="TestBench" instance=ExtResource("1_bench")]
+[node name="TestBench" unique_id=948611423 instance=ExtResource("1_bench")]
 minigame_scene = ExtResource("2_example")
+
+[node name="Node" type="Node" parent="." index="9" unique_id=961211488]
+script = ExtResource("3_aplwl")

@@ -9,18 +9,21 @@ const INSERTS_KEY: String = "example_menu_inserts"
 @onready var info: Label = $Info
 @onready var menu: Control = $Menu
 @onready var bullets: Label = $Menu/Box/Bullets
-@onready var last_line: Label = $Menu/Box/LastLine
 @onready var replay_voice: Button = $Menu/Box/ReplayVoice
 @onready var music_volume: HSlider = $Menu/Box/MusicVolume
 @onready var load_button: Button = $Menu/Box/Load
-@onready var voice_player: AudioStreamPlayer = $VoicePlayer
 
 var last_voice: String = ""
 
 func _ready() -> void:
+	
+	# WARNING this function is not called like this in danganmake
+	# just use the sounds of your sounds folder on your mod
+	GlobalSound.SFX_recursion_list("res://Examples/08_Persistent_Pause_Menu", GlobalSound.sfx)
+	
+	
 	persistent_state = true
 	GlobalStates.claim_action("menu", _open_menu)
-	GlobalStates.dialogue_line_shown.connect(_on_dialogue_line_shown)
 	GlobalStates.pause_changed.connect(_on_pause_changed)
 
 func Start_Minigame(_param: Dictionary):
@@ -61,28 +64,21 @@ func _open_menu() -> void:
 	music_volume.set_value_no_signal(GlobalSound.get_volume("Music"))
 	load_button.disabled = not GlobalStates.has_save()
 	menu.visible = true
-	GlobalSound.set_audio_plays_while_paused("Music", true)
-	GlobalSound.set_audio_paused("Voice", true)
+	GlobalSound.set_audio_paused("SFX", true)
 	GlobalStates.set_game_paused(true)
 
 func _close_menu() -> void:
 	menu.visible = false
-	voice_player.stop()
+	GlobalSound.Stop_SFX()
 	GlobalStates.set_game_paused(false)
-	GlobalSound.set_audio_paused("Voice", false)
-	GlobalSound.set_audio_plays_while_paused("Music", false)
+	GlobalSound.set_audio_paused("SFX", false)
 
-func _on_dialogue_line_shown(line: Dictionary) -> void:
-	last_line.text = "%s: %s" % [line.character, line.text]
-	last_voice = line.get("voice", "")
-	replay_voice.disabled = last_voice == ""
 
 func _on_pause_changed(paused: bool) -> void:
 	info.visible = not paused
 
 func _on_replay_voice_pressed() -> void:
-	voice_player.stream = GlobalSound.get_voice_stream(last_voice)
-	voice_player.play()
+	GlobalSound.Load_SFX("aypordios")
 
 func _on_music_volume_value_changed(value: float) -> void:
 	GlobalSound.set_volume("Music", int(value))
