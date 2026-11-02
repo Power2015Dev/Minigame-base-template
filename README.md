@@ -36,6 +36,8 @@ If you copied a minigame folder to make a new one, both minigames have the same 
 
 It only changes the UIDs of your minigame folders, `Dummy_Autoloads` is never touched, so the autoloads keep working. Cloning the repository for each new minigame is still the cleanest way.
 
+`You only need to do this one time per repository after that you can create your minigame without problems.`
+
 ## Autoloads
 
 The autoloads are registered by path (`res://Dummy_Autoloads/...`) in `project.godot`. Don't delete or re-add them from Project Settings, and don't delete the `.uid` files of `Dummy_Autoloads`.
