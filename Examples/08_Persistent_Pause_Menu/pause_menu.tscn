@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://y4d4wj6v7vsq"]
+
+[ext_resource type="Script" uid="uid://epjawm6a4a1q" path="res://Examples/08_Persistent_Pause_Menu/pause_menu.gd" id="1_script"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_lmmii"]
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=232328119]
+process_mode = 3
+layer = 40
+script = ExtResource("1_script")
+
+[node name="Info" type="Label" parent="." unique_id=1760542967]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1200.0
+offset_bottom = 100.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
+text = "Info"
+
+[node name="Menu" type="ColorRect" parent="." unique_id=1785307824]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="Box" type="VBoxContainer" parent="Menu" unique_id=574142907]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -320.0
+offset_right = 400.0
+offset_bottom = 320.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Menu/Box" unique_id=464067598]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Pause"
+horizontal_alignment = 1
+
+[node name="Bullets" type="Label" parent="Menu/Box" unique_id=1546147622]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Truth Bullets: 0"
+
+[node name="LastLine" type="Label" parent="Menu/Box" unique_id=652883260]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+autowrap_mode = 3
+
+[node name="ReplayVoice" type="Button" parent="Menu/Box" unique_id=404690465]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+disabled = true
+text = "Replay voice"
+
+[node name="MusicLabel" type="Label" parent="Menu/Box" unique_id=152105334]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Music volume"
+
+[node name="MusicVolume" type="HSlider" parent="Menu/Box" unique_id=2127215433]
+layout_mode = 2
+max_value = 6.0
+tick_count = 7
+ticks_on_borders = true
+
+[node name="Save" type="Button" parent="Menu/Box" unique_id=222376084]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Save"
+
+[node name="Load" type="Button" parent="Menu/Box" unique_id=928443081]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Load"
+
+[node name="BackToTitle" type="Button" parent="Menu/Box" unique_id=1379336088]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Back to title"
+
+[node name="VoicePlayer" type="AudioStreamPlayer" parent="." unique_id=219027506]
+stream = SubResource("AudioStreamRandomizer_lmmii")
+bus = &"Voice"
+
+[connection signal="pressed" from="Menu/Box/ReplayVoice" to="." method="_on_replay_voice_pressed"]
+[connection signal="value_changed" from="Menu/Box/MusicVolume" to="." method="_on_music_volume_value_changed"]
+[connection signal="pressed" from="Menu/Box/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Menu/Box/Load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="Menu/Box/BackToTitle" to="." method="_on_title_pressed"]

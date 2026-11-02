@@ -8,6 +8,12 @@ signal Hurt(Damage_taken : float)
 signal dialogue_paused
 signal dialogue_resumed
 signal dialogue_finished
+# Every dialogue line shown: {"character", "text", "id", "voice"}
+# voice is the voice line that played with it ("" if none),
+# you can play it again with GlobalSound.get_voice_stream(voice)
+signal dialogue_line_shown(line: Dictionary)
+# Emitted when set_game_paused pauses or resumes the game
+signal pause_changed(paused: bool)
 
 
 func Play_iSee():
@@ -43,6 +49,7 @@ func Play_Consent(main_char : String = "", secondary_char : String = ""):
 func get_trial_location() -> String:
 	return ""
 # This will return the amounts, name y path of your truthbullets
+# Use get_truth_bullet_list() instead, this one only returns the last bullet
 func get_truth_bullets() -> Dictionary:
 	# example of how the game will give you the data
 	#dic = {
@@ -56,6 +63,14 @@ func get_truth_bullets() -> Dictionary:
 		#}
 		  #}
 	return {}
+
+## The Truth Bullets of the trial, sorted by file name.
+## Inside the template it returns test data.
+func get_truth_bullet_list() -> Array:
+	return [
+		{"name": "Test Bullet 1", "description": "Test description 1.", "image": "res://iconDanganmake.png"},
+		{"name": "Test Bullet 2", "description": "Test description 2.", "image": "res://iconDanganmake.png"},
+	]
 
 # return current health in the health bar
 func get_Health() -> float:
@@ -127,6 +142,116 @@ func remove_persistent_minigame(node_name: String) -> void:
 	if node != null:
 		_persistent_nodes.erase(node)
 		node.queue_free()
+
+## Frees every persistent custom game.
+## Danganmake does it by itself when the player leaves the trial.
+func free_persistent_minigames() -> void:
+	for node in get_persistent_minigames():
+		node.queue_free()
+	_persistent_nodes.clear()
+#endregion
+
+
+#region Pause
+var _mouse_before_pause := Input.MOUSE_MODE_VISIBLE
+
+## Pauses or resumes the game like the pause menu of Danganmake: it shows the mouse
+## while paused and puts the old mouse mode back after.
+## Only nodes with process_mode = PROCESS_MODE_ALWAYS keep running, your menu must use it.
+## The music, SFX and voice pause too, see GlobalSound.set_audio_plays_while_paused()
+func set_game_paused(paused: bool) -> void:
+	if paused == get_tree().paused:
+		return
+	if paused:
+		_mouse_before_pause = Input.mouse_mode
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
+		Input.mouse_mode = _mouse_before_pause
+	get_tree().paused = paused
+	pause_changed.emit(paused)
+
+func is_game_paused() -> bool:
+	return get_tree().paused
+#endregion
+
+
+#region Main menu, saves and test mode
+# Template only, the TestBench fills these
+var _test_bench: Node = null
+var _test_mode: bool = false
+var _test_calls: Array = []
+var _test_save: Dictionary = {}
+
+## Goes back to the main menu, or to the editor when the trial is being tested.
+## In the TestBench it restarts the test.
+func return_to_title() -> void:
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	GlobalSound.Stop_Voice()
+	GlobalSound.Stop_SFX()
+	GlobalSound.Stop_MUSIC()
+	free_persistent_minigames()
+	get_tree().reload_current_scene()
+
+## True while the trial is being tested from the editor.
+## In the TestBench it is the simulate_test_mode option of the inspector.
+func is_test_mode() -> bool:
+	return _test_mode
+
+## Saves the trial like the Save of the pause menu. False if no trial is running.
+## In the TestBench it remembers the custom values and the inserts made so far.
+func save_game() -> bool:
+	_test_save = {"custom_values": _custom_values.duplicate(true), "calls": _test_calls.duplicate(true)}
+	return true
+
+## True if the trial has a save.
+func has_save() -> bool:
+	return not _test_save.is_empty()
+
+## Loads the save like the Load of the pause menu. False if there is no save.
+## It unpauses the game but doesn't emit pause_changed.
+## In the TestBench it simulates closing the game and loading: the persistent minigames
+## are freed and Resume_Minigame() is called on a new one.
+func load_game() -> bool:
+	if _test_save.is_empty():
+		return false
+	_custom_values = _test_save.custom_values.duplicate(true)
+	_test_calls = _test_save.calls.duplicate(true)
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	free_persistent_minigames()
+	if is_instance_valid(_test_bench):
+		_test_bench.call("_resume_after_load")
+	return true
+#endregion
+
+
+#region Input actions
+var _claimed_actions: Dictionary = {}
+
+## Takes an input action from Danganmake: when Danganmake would use it, it calls callback instead.
+## For example claiming "menu" opens your menu instead of the pause menu (Esc / gamepad).
+## Danganmake checks "menu" in the courtroom and the 2D / free roam scene, only while not paused.
+## It is released by itself when the node that owns the callback is freed.
+func claim_action(action: String, callback: Callable) -> void:
+	_claimed_actions[action] = callback
+
+func release_action(action: String) -> void:
+	_claimed_actions.erase(action)
+
+func is_action_claimed(action: String) -> bool:
+	var callback: Callable = _claimed_actions.get(action, Callable())
+	if callback.is_valid():
+		return true
+	_claimed_actions.erase(action)
+	return false
+
+# Template only, Danganmake uses its own: the TestBench calls it like the real scenes
+func run_claimed_action(action: String) -> bool:
+	if not is_action_claimed(action):
+		return false
+	_claimed_actions[action].call()
+	return true
 #endregion
 
 

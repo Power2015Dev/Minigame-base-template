@@ -12,6 +12,8 @@ extends Node3D
 @export var test_params: Dictionary = {}
 ## Fake dialogue balloon, to test get_current_balloon()
 @export var show_test_balloon: bool = true
+## What GlobalStates.is_test_mode() returns
+@export var simulate_test_mode: bool = false
 @export var label_tree: Label
 
 # To add, remove or rename characters, edit the children of "Characters".
@@ -19,6 +21,8 @@ extends Node3D
 
 const EYE_HEIGHT: float = 1.5
 const IGNORED_FOLDERS: PackedStringArray = [".godot", "Dummy_Autoloads", "addons"]
+const TEST_LINE: String = "Test dialogue after your minigame. Click here (or press Enter) to finish it."
+const LOSE_RESTART_DELAY: float = 2.0
 
 @onready var camera: Camera3D = $Camera3D
 @onready var courtroom: Node3D = $Courtroom
@@ -33,8 +37,13 @@ var editor_ui: Control
 var minigame: Node
 var camera_tween: Tween
 var waiting_dialogue: bool = false
+var minigame_data: Dictionary = {}
+var lose_pending: bool = false
 
 func _ready() -> void:
+	GlobalStates._test_bench = self
+	GlobalStates._test_mode = simulate_test_mode
+	GlobalStates._test_calls.clear()
 	_find_scenes_if_missing()
 	_register_stage()
 	_register_balloon()
@@ -113,6 +122,12 @@ func _start_minigame(data: Dictionary) -> void:
 	if is_instance_valid(minigame) and not _is_persistent(minigame):
 		minigame.queue_free()
 	_set_balloon_paused(true)
+	# Danganmake reads these from the dialogue file as JSON, so ints come back as floats
+	GlobalStates._test_calls.append(JSON.parse_string(JSON.stringify(data)))
+	minigame_data = data.duplicate(true)
+	_spawn_minigame(data)
+
+func _spawn_minigame(data: Dictionary) -> void:
 	minigame = minigame_scene.instantiate()
 	add_child(minigame)
 	if minigame.has_method("Start_Minigame"):
@@ -131,7 +146,28 @@ func _on_player_lose() -> void:
 	if not is_instance_valid(minigame):
 		return
 	print("[TestBench] Player_lose emitted")
-	_finish_minigame()
+	# Danganmake opens one game over for each Player_lose
+	if lose_pending:
+		push_warning("TestBench: Player_lose emitted again, Danganmake would show another game over")
+		return
+	lose_pending = true
+	var lost_minigame := minigame
+	label_tree.text = "Player_lose emitted: you lost, restarting the minigame"
+	label_tree.add_theme_color_override("font_color", Color.RED)
+	# The minigame keeps running during the game over, like in Danganmake
+	await get_tree().create_timer(LOSE_RESTART_DELAY, false).timeout
+	lose_pending = false
+	# It won or was freed while waiting
+	if not is_instance_valid(minigame) or minigame != lost_minigame:
+		return
+	label_tree.text = "Alive in the tree"
+	label_tree.add_theme_color_override("font_color", Color.WHITE)
+	# Only in the TestBench: Danganmake keeps the same minigame running after the game over
+	minigame.queue_free()
+	minigame = null
+	await get_tree().process_frame
+	print("[TestBench] Restarting the minigame with the same data")
+	_spawn_minigame(minigame_data.duplicate(true))
 
 func _on_hurt(damage: float) -> void:
 	print("[TestBench] Hurt emitted, damage: ", damage)
@@ -171,13 +207,22 @@ func _set_balloon_paused(paused: bool) -> void:
 	balloon.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
 	waiting_dialogue = not paused
 	if not paused:
-		balloon_label.text = "Character_01: Test dialogue after your minigame. Click here (or press Enter) to finish it."
+		balloon_label.text = "Character_01: " + TEST_LINE
+		GlobalStates.dialogue_line_shown.emit({"character": "Character_01", "text": TEST_LINE, "id": "", "voice": ""})
 
 # Clicking the test balloon simulates finishing the dialogue
 func _on_balloon_input(event: InputEvent) -> void:
 	var click := event as InputEventMouseButton
 	if click and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		_end_test_dialogue()
+
+# Like the courtroom of Danganmake: a claimed "menu" goes to the minigame
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("menu") and not get_tree().paused:
+		if GlobalStates.run_claimed_action("menu"):
+			get_viewport().set_input_as_handled()
+		else:
+			print("[TestBench] Danganmake would use \"menu\" here (pause menu)")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
@@ -193,6 +238,33 @@ func _end_test_dialogue() -> void:
 
 func _is_persistent(node: Node) -> bool:
 	return bool(node.get("persistent_state")) if "persistent_state" in node else false
+
+# GlobalStates.load_game() simulates closing the game: a new node goes to the root
+func _resume_after_load() -> void:
+	if is_instance_valid(minigame):
+		minigame.queue_free()
+		minigame = null
+		_finish_minigame()
+	# Wait for the old nodes to leave the tree so the name stays free
+	await get_tree().process_frame
+	var node := minigame_scene.instantiate()
+	if not node.has_method("Resume_Minigame"):
+		node.free()
+		print("[TestBench] Your minigame doesn't have Resume_Minigame(info), it doesn't come back")
+		return
+	get_tree().root.add_child(node)
+	var info := {
+		"from": "save",
+		"line": 0,
+		"name": minigame_scene.resource_path.get_base_dir().get_file(),
+		"calls": GlobalStates._test_calls.duplicate(true),
+	}
+	if node.call("Resume_Minigame", info) == true:
+		GlobalStates._persistent_nodes.append(node)
+		print("[TestBench] Resume_Minigame returned true, the minigame is back: ", info)
+	else:
+		node.queue_free()
+		print("[TestBench] Resume_Minigame returned false, the minigame was freed")
 #endregion
 
 #region Signals of the autoloads

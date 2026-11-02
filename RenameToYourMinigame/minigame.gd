@@ -41,6 +41,19 @@ func Start_Minigame(param : Dictionary):
 	await GlobalStates.Player_won
 	pass
 
+# Optional: to bring a persistent minigame back after loading a save,
+# copy this function to your script and uncomment it. Don't keep it here
+# without a reason: Danganmake creates every minigame that has it when a save loads.
+#
+# func Resume_Minigame(info: Dictionary) -> bool:
+# 	var state = GlobalStates.get_custom_value("my_state", null)
+# 	if state == null and not info.calls.is_empty():
+# 		state = info.calls.back()
+# 	if state == null:
+# 		return false
+# 	persistent_state = true
+# 	return true
+
 func Win():
 	# deleting the inputs you declared after win
 	for actions in input_Keys:

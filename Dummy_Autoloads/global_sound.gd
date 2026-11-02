@@ -251,3 +251,57 @@ func get_music_position() -> float:
 		return music_player.get_playback_position()
 	return 0.0
 #endregion
+
+
+#region Volume and pause
+# bus_name is "Music", "SFX" or "Voice"
+
+## Volume from 0 (muted) to 6, the same levels as the Options menu.
+func get_volume(bus_name: String) -> int:
+	match bus_name:
+		"Music": return music_vol
+		"SFX": return sfx_vol
+		"Voice": return voice_vol
+	return 0
+
+## Inside Danganmake it also saves the level in the settings, like Options.
+func set_volume(bus_name: String, level: int) -> void:
+	level = clampi(level, 0, 6)
+	match bus_name:
+		"Music": music_vol = level
+		"SFX": sfx_vol = level
+		"Voice": voice_vol = level
+		_: return
+	var bus_index := AudioServer.get_bus_index(bus_name)
+	if bus_index != -1:
+		AudioServer.set_bus_mute(bus_index, level == 0)
+		if level > 0:
+			AudioServer.set_bus_volume_db(bus_index, remap(level, 1, 6, -30.0, 0.0))
+
+## Pauses or resumes without stopping: it carries on from the same point.
+## Only sounds that are playing can be paused, a sound started later plays normally.
+func set_audio_paused(bus_name: String, paused: bool) -> void:
+	match bus_name:
+		"Music":
+			music_player.stream_paused = paused
+		"Voice":
+			voice_player.stream_paused = paused
+		"SFX":
+			sfx_player.stream_paused = paused
+			for player in audio_pool:
+				player.stream_paused = paused
+
+## The music, SFX and voice pause together with the game.
+## With true that bus keeps playing while the game is paused, false puts it back to normal.
+func set_audio_plays_while_paused(bus_name: String, plays: bool) -> void:
+	var mode := Node.PROCESS_MODE_ALWAYS if plays else Node.PROCESS_MODE_INHERIT
+	match bus_name:
+		"Music":
+			music_player.process_mode = mode
+		"Voice":
+			voice_player.process_mode = mode
+		"SFX":
+			sfx_player.process_mode = mode
+			for player in audio_pool:
+				player.process_mode = mode
+#endregion
