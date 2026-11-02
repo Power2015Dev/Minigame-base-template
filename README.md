@@ -46,6 +46,9 @@ The autoloads are registered by path (`res://Dummy_Autoloads/...`) in `project.g
 
 Inside the template these functions return the TestBench objects, empty values or a placeholder texture. Inside Danganmake they return the real data.
 
+`Check the documentation for futher information`
+## [Documentation](https://power2015dev.github.io/Danganmake-Engine/content.html)
+
 | Autoload | Functions |
 | --- | --- |
 | `GlobalStates` | `get_current_balloon()`, `is_dialogue_paused()`, `get_current_dialogue()`, signals `dialogue_paused`, `dialogue_resumed`, `dialogue_finished` |
@@ -57,7 +60,7 @@ Inside the template these functions return the TestBench objects, empty values o
 | `GlobalStates` | `get_truth_bullet_list()`, each one as `{"name", "description", "image"}` |
 | `GlobalStates` | `set_custom_value(key, value)`, `get_custom_value(key, default)`, `has_custom_value(key)`, `erase_custom_value(key)` (saved with the trial) |
 | `GlobalStates` | `get_custom_focus_list()`, `get_custom_focus_path(name)`, `get_images()`, `get_image_texture(name)`, `get_backgrounds()`, `get_background_texture(name)`, `get_current_background()`, `get_videos()`, `get_video_stream(name)`, `get_custom_balloons()`, `get_trial_assets_path()` |
-| `GlobalStates` | `get_platform()`, `is_mobile()`, `is_touch_available()` |
+| `GlobalStates (Not recommended, given that DanganMake is not yet available on mobile the only thing available is get_platform())` | `get_platform()`, `is_mobile()`, `is_touch_available()` |
 | `CharacterList` | `get_camera_3d()`, `get_world_root()`, `get_courtroom()`, `get_world_environment()` |
 | `CharacterList` | `get_character_names()`, `get_character_emotions(name)`, `get_character_3d(name)`, `get_characters_3d()`, `get_character_sprite_3d(name)`, `get_character_position(name)` |
 | `CharacterList` | `add_3d_node(node)`, `free_3d_nodes()`, `take_camera_control()`, `release_camera_control(restore)`, `is_camera_locked()`, `get_character_at_screen(screen_pos)`, `screen_to_world(screen_pos)` (needs collisions) |
