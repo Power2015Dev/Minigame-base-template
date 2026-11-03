@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cwqqycpb88iln"]
 
-[ext_resource type="Script" path="res://RenameToYourMinigame/editor_interface.gd" id="1_w26cy"]
+[ext_resource type="Script" uid="uid://dw01tjcro4p5o" path="res://RenameToYourMinigame/editor_interface.gd" id="1_w26cy"]
 [ext_resource type="Texture2D" uid="uid://xmtfl3fewxn3" path="res://iconDanganmake.png" id="2_i30qn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpcc3"]

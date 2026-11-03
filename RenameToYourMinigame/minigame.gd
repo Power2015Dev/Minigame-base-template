@@ -38,10 +38,9 @@ func Start_Minigame(param : Dictionary):
 	# var cube := MeshInstance3D.new()
 	# cube.mesh = BoxMesh.new()
 	# CharacterList.add_3d_node(cube)
-	await GlobalStates.Player_won
 	pass
 
-# Optional: to bring a persistent minigame back after loading a save,
+# Optional: to bring a persistent minigame back after loading a save
 # The example testbenches inherit this script be aware of that.
 #
 # func Resume_Minigame(info: Dictionary) -> bool:
