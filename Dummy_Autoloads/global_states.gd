@@ -114,6 +114,66 @@ func is_dialogue_paused() -> bool:
 ## Keys: "character", "emotion", "text", "id" (id of the dialogue line)
 func get_current_dialogue() -> Dictionary:
 	return _test_dialogue.duplicate()
+
+# Template only
+var _minigame_balloon: Node = null
+
+## Opens a new dialogue box while your minigame runs and waits until the player reads it all.
+## text uses the same syntax as a .dialogue file: "Makoto: Hello!\nKyoko: Focus."
+## title: the "~ title" where it starts, "" starts at the first line.
+## extra_states: objects the dialogue can use, pass [self] to call your functions with "do".
+## Inside Danganmake it is the real trial box (or the 2D one) with the Custom HUD of the trial.
+## Inside the template it shows a simple test box, only plain lines:
+## conditions, jumps, responses and "do" only work inside Danganmake.
+## Use it with await: await GlobalStates.play_dialogue("Makoto: This is my minigame!")
+func play_dialogue(text: String, title: String = "", extra_states: Array = []) -> void:
+	if is_instance_valid(_minigame_balloon):
+		push_warning("play_dialogue: another dialogue is already playing")
+		return
+	var lines := _parse_test_dialogue(text, title)
+	if lines.is_empty():
+		return
+	if not is_instance_valid(_test_bench):
+		for line in lines:
+			print("[play_dialogue] %s: %s" % [line.character, line.text])
+			dialogue_line_shown.emit({"character": line.character, "text": line.text, "id": "", "voice": ""})
+		return
+	_minigame_balloon = _test_bench.call("_show_test_dialogue", lines)
+	await Signal(_test_bench, "test_dialogue_ended")
+	_minigame_balloon = null
+
+## The box opened by play_dialogue(), null if no dialogue is playing.
+## You can move it, tween it or hide it while it plays.
+func get_minigame_balloon() -> Node:
+	return _minigame_balloon if is_instance_valid(_minigame_balloon) else null
+
+# lectura simple del texto para el testbench: solo lineas "personaje: texto"
+func _parse_test_dialogue(text: String, title: String) -> Array:
+	var lines: Array = []
+	var bbcode := RegEx.create_from_string("\\[[^\\]]*\\]")
+	var started := title == ""
+	for raw in text.split("\n"):
+		var line := raw.strip_edges()
+		if line.begins_with("~"):
+			if not lines.is_empty():
+				break
+			started = started or line.trim_prefix("~").strip_edges() == title
+			continue
+		if line.begins_with("=> END"):
+			if started:
+				break
+			continue
+		if not started or line == "" or line.begins_with("#") or line.begins_with("=>") or line.begins_with("- ") \
+				or line.begins_with("do ") or line.begins_with("set ") or line.begins_with("if ") \
+				or line.begins_with("elif ") or line == "else:":
+			continue
+		var character := ""
+		var split := line.find(": ")
+		if split != -1:
+			character = line.left(split)
+			line = line.substr(split + 2)
+		lines.append({"character": character, "text": bbcode.sub(line, "", true).strip_edges()})
+	return lines
 #endregion
 
 

@@ -52,6 +52,7 @@ Inside the template these functions return the TestBench objects, empty values o
 | Autoload | Functions |
 | --- | --- |
 | `GlobalStates` | `get_current_balloon()`, `is_dialogue_paused()`, `get_current_dialogue()`, signals `dialogue_paused`, `dialogue_resumed`, `dialogue_finished` |
+| `GlobalStates` | `await play_dialogue(text, title, extra_states)` opens a new dialogue box with the trial Custom HUD and waits until it is read, `get_minigame_balloon()` returns that box. In the TestBench it shows a simple test box |
 | `GlobalStates` | signal `dialogue_line_shown(line)`, every line shown as `{"character", "text", "id", "voice"}` (`voice` is the voice line that played with it, `""` if none) |
 | `GlobalStates` | `get_persistent_minigames()`, `get_persistent_minigame(name)`, `remove_persistent_minigame(name)`, `free_persistent_minigames()` |
 | `GlobalStates` | `set_game_paused(paused)`, `is_game_paused()`, signal `pause_changed(paused)` |
@@ -62,9 +63,9 @@ Inside the template these functions return the TestBench objects, empty values o
 | `GlobalStates` | `get_custom_focus_list()`, `get_custom_focus_path(name)`, `get_images()`, `get_image_texture(name)`, `get_backgrounds()`, `get_background_texture(name)`, `get_current_background()`, `get_videos()`, `get_video_stream(name)`, `get_custom_balloons()`, `get_trial_assets_path()` |
 | `GlobalStates (Not recommended, given that DanganMake is not yet available on mobile the only thing available is get_platform())` | `get_platform()`, `is_mobile()`, `is_touch_available()` |
 | `CharacterList` | `get_camera_3d()`, `get_world_root()`, `get_courtroom()`, `get_world_environment()` |
-| `CharacterList` | `get_character_names()`, `get_character_emotions(name)`, `get_character_3d(name)`, `get_characters_3d()`, `get_character_sprite_3d(name)`, `get_character_position(name)` |
+| `CharacterList` | `get_character_names()`, `get_character_emotions(name)`, `get_character_3d(name)`, `get_characters_3d()`, `get_character_sprite_3d(name)`, `get_character_position(name)`, `get_character_real_name(alias)`, `get_character_aliases(real_name)`, `get_character_alias_map()` |
 | `CharacterList` | `add_3d_node(node)`, `free_3d_nodes()`, `take_camera_control()`, `release_camera_control(restore)`, `is_camera_locked()`, `get_character_at_screen(screen_pos)`, `screen_to_world(screen_pos)` (needs collisions) |
-| `CharacterScript` | `get_player_body()`, `get_active_camera_3d()`, `get_hostage_cameras()`, `get_current_scene_name()`, `get_flags()`, `has_flag(flag)`, `get_current_character_2d()`, `get_background_node()`, `get_character_node_2d()` |
+| `CharacterScript` | `get_player_body()`, `get_active_camera_3d()`, `get_hostage_cameras()`, `get_current_scene_name()`, `get_flags()`, `has_flag(flag)`, `get_project_flags(include_auto)`, `get_current_character_2d()`, `get_background_node()`, `get_character_node_2d()` |
 | `GlobalSound` | `get_sfx_names()`, `get_music_names()`, `get_voice_names()`, `get_sfx_stream(name)`, `get_music_stream(name)`, `get_voice_stream(name)`, `get_current_music()`, `get_music_position()` |
 | `GlobalSound` | `get_volume(bus)`, `set_volume(bus, level)` (0 to 6, like Options), `set_audio_paused(bus, paused)`, `set_audio_plays_while_paused(bus, plays)`. `bus` is `"Music"`, `"SFX"` or `"Voice"` |
 

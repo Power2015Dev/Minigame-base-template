@@ -143,6 +143,29 @@ theme_override_font_sizes/font_size = 28
 text = "Character_01: This is a test balloon. Danganmake pauses it while your custom game runs."
 autowrap_mode = 3
 
+[node name="MinigameBalloon" type="CanvasLayer" parent="."]
+layer = 20
+visible = false
+
+[node name="Panel" type="Panel" parent="MinigameBalloon"]
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.75
+anchor_right = 0.9
+anchor_bottom = 0.95
+theme_override_styles/panel = SubResource("StyleBoxFlat_balloon")
+
+[node name="Label" type="Label" parent="MinigameBalloon/Panel"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 16.0
+offset_right = -24.0
+offset_bottom = -16.0
+theme_override_font_sizes/font_size = 28
+autowrap_mode = 3
+
 [node name="UILayer" type="CanvasLayer" parent="." unique_id=1200065742]
 layer = 30
 

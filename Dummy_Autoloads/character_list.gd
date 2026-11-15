@@ -169,6 +169,35 @@ func get_characters_3d() -> Dictionary:
 			result[ch_name] = character_in_scene_active_3D[ch_name]
 	return result
 
+## In free roam the characters are named by their marker alias, in the courtroom
+## by their real name. These convert between both. In the courtroom alias == real name.
+
+## Real name (the character folder) of a character in the room, "" if it isn't in the scene.
+func get_character_real_name(ch_name: String) -> String:
+	ch_name = ch_name.strip_edges()
+	var node := get_character_3d(ch_name)
+	if node == null:
+		return ""
+	return str(node.get_meta("nombre_real", ch_name))
+
+## Aliases in the room that belong to a real character. Can be more than one.
+func get_character_aliases(real_name: String) -> PackedStringArray:
+	real_name = real_name.strip_edges()
+	var result := PackedStringArray()
+	var characters := get_characters_3d()
+	for ch_name in characters:
+		if str(characters[ch_name].get_meta("nombre_real", ch_name)) == real_name:
+			result.append(ch_name)
+	return result
+
+## Returns { "Alias": "Real name" } for every character in the room.
+func get_character_alias_map() -> Dictionary:
+	var result := {}
+	var characters := get_characters_3d()
+	for ch_name in characters:
+		result[ch_name] = str(characters[ch_name].get_meta("nombre_real", ch_name))
+	return result
+
 ## The Sprite3D of a character, the one CH_EXPRESSION_3D() changes.
 func get_character_sprite_3d(ch_name: String) -> Sprite3D:
 	var sprite = _character_sprites.get(ch_name.strip_edges())

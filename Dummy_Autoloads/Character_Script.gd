@@ -311,6 +311,14 @@ func get_flags() -> PackedStringArray:
 func has_flag(flag: String) -> bool:
 	return get_flags().has(flag.strip_edges())
 
+## Every flag the trial uses, turned on or not: the "Sets flag" / "Requires flag"
+## of markers, objects and warps, and the flags used in intro.dialogue and in the
+## dialogues of each map scene. With include_auto it also returns the automatic
+## ones ("visited:<Scene>", "talked:<Scene>/<Alias>").
+## It reads the trial files on every call, so call it once and keep the result.
+func get_project_flags(include_auto: bool = false) -> PackedStringArray:
+	return PackedStringArray()
+
 ## Name of the character and emotion shown in the 2D scene: { "character": "", "emotion": "" }
 func get_current_character_2d() -> Dictionary:
 	return {"character": "", "emotion": ""}

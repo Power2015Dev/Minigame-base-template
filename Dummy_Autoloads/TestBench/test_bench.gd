@@ -32,6 +32,8 @@ const LOSE_RESTART_DELAY: float = 2.0
 @onready var balloon_label: Label = $TestBalloon/Panel/Label
 @onready var balloon_panel: Panel = $TestBalloon/Panel
 @onready var ui_layer: CanvasLayer = $UILayer
+@onready var minigame_balloon: CanvasLayer = $MinigameBalloon
+@onready var minigame_balloon_label: Label = $MinigameBalloon/Panel/Label
 
 var editor_ui: Control
 var minigame: Node
@@ -39,6 +41,10 @@ var camera_tween: Tween
 var waiting_dialogue: bool = false
 var minigame_data: Dictionary = {}
 var lose_pending: bool = false
+var minigame_lines: Array = []
+
+# GlobalStates.play_dialogue() espera esta senal
+signal test_dialogue_ended
 
 func _ready() -> void:
 	GlobalStates._test_bench = self
@@ -48,6 +54,7 @@ func _ready() -> void:
 	_register_stage()
 	_register_balloon()
 	_connect_signals()
+	minigame_balloon.get_node("Panel").gui_input.connect(_on_minigame_balloon_input)
 
 	if skip_editor_interface:
 		_start_minigame(test_params)
@@ -225,7 +232,10 @@ func _input(event: InputEvent) -> void:
 			print("[TestBench] Danganmake would use \"menu\" here (pause menu)")
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept"):
+	if minigame_balloon.visible and event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
+		_next_test_line()
+	elif event.is_action_pressed("ui_accept"):
 		_end_test_dialogue()
 
 func _end_test_dialogue() -> void:
@@ -235,6 +245,29 @@ func _end_test_dialogue() -> void:
 	balloon.visible = false
 	print("[TestBench] Test dialogue finished")
 	GlobalStates.Dialogue_Finished()
+
+#region play_dialogue
+# caja simple que usa GlobalStates.play_dialogue() dentro de la plantilla
+func _show_test_dialogue(lines: Array) -> CanvasLayer:
+	minigame_lines = lines.duplicate()
+	minigame_balloon.visible = true
+	_next_test_line()
+	return minigame_balloon
+
+func _next_test_line() -> void:
+	if minigame_lines.is_empty():
+		minigame_balloon.visible = false
+		test_dialogue_ended.emit()
+		return
+	var line: Dictionary = minigame_lines.pop_front()
+	minigame_balloon_label.text = line.text if line.character == "" else "%s: %s" % [line.character, line.text]
+	GlobalStates.dialogue_line_shown.emit({"character": line.character, "text": line.text, "id": "", "voice": ""})
+
+func _on_minigame_balloon_input(event: InputEvent) -> void:
+	var click := event as InputEventMouseButton
+	if click and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+		_next_test_line()
+#endregion
 
 func _is_persistent(node: Node) -> bool:
 	return bool(node.get("persistent_state")) if "persistent_state" in node else false
